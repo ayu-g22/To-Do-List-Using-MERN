@@ -13,18 +13,11 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect("mongodb+srv://ayushagupta225:A%40Yush225@cluster0.fi9trrm.mongodb.net/todoDB",{useNewUrlParser:true});
+mongoose.connect("mongodb://localhost:27017/todoDB",{useNewUrlParser:true});
 
 const todoSchema={
   name:String
 }
-
-const listSchema={
-  name:String,
-  items:[todoSchema]
-}
-
-const list=mongoose.model("list",listSchema);
 
 const todo=mongoose.model("TodoL",todoSchema);
 var n="ayush ji";
@@ -32,27 +25,6 @@ const t1=new todo({
   name:n
 });
 const defaul=[t1];
-app.get("/:pn",function(req,res){
-  const pname=req.params.pn;
-  list.find({},function(err,foundI){
-    if(!err)
-    {
-      if(!foundI)
-      {
-        const lis=new list({
-          name:pname,
-          items: defaul
-        });
-        lis.save();
-        res.redirect("/");
-      }
-    else
-    {
-      res.render('list',{curDay:pname,it:foundI});
-    } 
-  }
-  })
-})
 
 app.get("/", function(req, res){
   todo.find({},function(err,foundI){
@@ -69,15 +41,9 @@ app.post("/",function(req,res){
   const td=new todo({
     name:ite
   });
-  if(lname=="Today")
-  {
-    td.save();
-    res.redirect("/");
-  }
-  else
-  {
-    console.log(list.findOne({name:lname}));
-  }
+  td.save();
+  console.log("Inserted");
+  res.redirect("/");
 })
 
 app.post("/delete",function(req,res){
@@ -87,12 +53,12 @@ app.post("/delete",function(req,res){
        console.log(err);
       else
       {
-        console.log("Sucess");
+        console.log("Deleted");
         res.redirect("/");
       }
     })
 });
 
-app.listen(process.env.PORT||3000, function(){
-  console.log("Server started on port 3000.");
+app.listen(process.env.PORT||300, function(){
+  console.log("Server started on port 300.");
 });
